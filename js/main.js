@@ -12,7 +12,14 @@
             heightNum: 5, //브라우저 높이의 5배로 scrollHeight 세팅
             scrollHeight : 0,
             objs:{
-                container: document.querySelector('#scroll-section-0')
+                container: document.querySelector('#scroll-section-0'),
+                messageA: document.querySelector('#scroll-section-0 .main-message.a'),
+                messageB: document.querySelector('#scroll-section-0 .main-message.b'),
+                messageC: document.querySelector('#scroll-section-0 .main-message.c'),
+                messageD: document.querySelector('#scroll-section-0 .main-message.d')
+            },
+            values:{
+                messageA_opacity: [0, 1]
             }
         },
         {
@@ -51,17 +58,48 @@
             sceneInfo[i].objs.container.style.height = `${sceneInfo[i].scrollHeight}px` //스크롤바가 작아질것임
         }
 
-        // *스크롤이 위치를 인식해서 body에 id값을 넣어줘야 되기때문이다* (애플코딩 : 현재 활성 씬 반영하기)
+        // *스크롤이 위치를 인식해서 body에 id값을 넣어줘야 되기때문이다* (애플코딩 : 현재 활성 씬 반영하기) -> 이해하기 어려움
         let totalScrollHeight = 0;
         for(let i = 0; i < sceneInfo.length; i++ ){
             totalScrollHeight += sceneInfo[i].scrollHeight;
             if(totalScrollHeight >= pageYOffset){
                 currentScene = i;
+                /*console.log(totalScrollHeight)*/
                 // for문 멈추기
                 break;
             }
         }
         document.body.setAttribute('id', `show-scene-${currentScene}`);
+    }
+
+    function calcValues (values, currentYOffset) {
+
+    }
+
+    function playAnimation () {
+        const objs = sceneInfo[currentScene].objs;
+        const values = sceneInfo[currentScene].values;
+        const currentYOffset = yOffset - prevScrollHeight;
+        console.log(currentScene, currentYOffset);
+
+        switch (currentScene){
+            case 0:
+                /*console.log('0 play');*/
+                let messageA_opacity_0 = values.messageA_opacity[0];
+                let messageA_opacity_1 = values.messageA_opacity[1];
+                console.log(calcValues(values.messageA_opacity, currentYOffset))
+
+                break;
+            case 1:
+                /*console.log('1 play');*/
+                break;
+            case 2:
+                /*console.log('2 play');*/
+                break;
+            case 3:
+                /*console.log('3 play');*/
+                break;
+        }
     }
 
     function scrollLoop () {
@@ -72,17 +110,18 @@
         }
         if(yOffset > prevScrollHeight + sceneInfo[currentScene].scrollHeight){
             currentScene++;
+            // 스크롤이 해당섹션에 진입하면 body에 id를 붙여서 block시켜준다
+            document.body.setAttribute('id', `show-scene-${currentScene}`);
         }
         if(yOffset < prevScrollHeight){
             currentScene--;
+            // 스크롤이 해당섹션에 진입하면 body에 id를 붙여서 block시켜준다
+            document.body.setAttribute('id', `show-scene-${currentScene}`);
         }
         // 스크롤이 해당섹션에 진입하면 currentScene 인덱스가 바뀌는걸 확인할 수 있다
-        console.log(currentScene);
+        /*console.log(currentScene);*/
 
-        // 스크롤이 해당섹션에 진입하면 body에 id를 붙여서 block시켜준다
-        document.body.setAttribute('id', `show-scene-${currentScene}`);
-
-
+        playAnimation();
     }
 
     window.addEventListener('scroll', () => {
