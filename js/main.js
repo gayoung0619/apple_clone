@@ -50,6 +50,18 @@
             sceneInfo[i].scrollHeight = sceneInfo[i].heightNum * window.innerHeight;
             sceneInfo[i].objs.container.style.height = `${sceneInfo[i].scrollHeight}px` //스크롤바가 작아질것임
         }
+
+        // *스크롤이 위치를 인식해서 body에 id값을 넣어줘야 되기때문이다* (애플코딩 : 현재 활성 씬 반영하기)
+        let totalScrollHeight = 0;
+        for(let i = 0; i < sceneInfo.length; i++ ){
+            totalScrollHeight += sceneInfo[i].scrollHeight;
+            if(totalScrollHeight >= pageYOffset){
+                currentScene = i;
+                // for문 멈추기
+                break;
+            }
+        }
+        document.body.setAttribute('id', `show-scene-${currentScene}`);
     }
 
     function scrollLoop () {
@@ -64,15 +76,28 @@
         if(yOffset < prevScrollHeight){
             currentScene--;
         }
+        // 스크롤이 해당섹션에 진입하면 currentScene 인덱스가 바뀌는걸 확인할 수 있다
         console.log(currentScene);
 
+        // 스크롤이 해당섹션에 진입하면 body에 id를 붙여서 block시켜준다
+        document.body.setAttribute('id', `show-scene-${currentScene}`);
+
+
     }
-    window.addEventListener('resize', setLayout);
+
     window.addEventListener('scroll', () => {
         yOffset = window.pageYOffset;
         scrollLoop();
     })
+    /*
+        DOMContentLoaded와 load의 차이?
+        load -> 웹페이지의 이미지등과 같은 리소스들도 다 세팅이 되고 load [실행이 좀 느림]
+        DOMContentLoaded -> html객체들(dom구조)들이 세팅되면 load [실행이 더 빨라]
+    */
+    /*window.addEventListener('DOMContentLoaded', setLayout);*/
+    window.addEventListener('load', setLayout);
+    window.addEventListener('resize', setLayout);
 
-    setLayout();
+
 
 })();
