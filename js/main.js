@@ -73,22 +73,25 @@
     }
 
     function calcValues (values, currentYOffset) {
-
+        let rv;
+        // 현재 씬(스크롤섹션)에서 스크롤된 범위를 비율로 구하기
+        let scrollRatio = currentYOffset / sceneInfo[currentScene].scrollHeight;
+        rv = scrollRatio * (values[1] - values[0]) + values[0];
+        return rv;
     }
 
     function playAnimation () {
         const objs = sceneInfo[currentScene].objs;
         const values = sceneInfo[currentScene].values;
         const currentYOffset = yOffset - prevScrollHeight;
-        console.log(currentScene, currentYOffset);
+        /*console.log(currentScene, currentYOffset);*/
 
         switch (currentScene){
             case 0:
                 /*console.log('0 play');*/
-                let messageA_opacity_0 = values.messageA_opacity[0];
-                let messageA_opacity_1 = values.messageA_opacity[1];
-                console.log(calcValues(values.messageA_opacity, currentYOffset))
-
+                let messageA_opacity_in = calcValues(values.messageA_opacity, currentYOffset);
+                console.log(messageA_opacity_in)
+                objs.messageA.style.opacity = messageA_opacity_in;
                 break;
             case 1:
                 /*console.log('1 play');*/
