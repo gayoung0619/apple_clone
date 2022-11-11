@@ -4,6 +4,7 @@
     let yOffset = 0; //window.pageYOffset 값을 담은 변수
     let prevScrollHeight = 0; //현재 스크롤 위치(yOffset)보다 이전에 위치한 스크롤 섹션들의 스크롤 높이값의 합
     let currentScene = 0; //현재 활성화된(눈 앞에 보고았는)씬(scroll-section)
+    let enterNewScene = false; //새로운 scene이 시작된 순간 true, 씬이 바뀌는순간 알 수 없는 버그로 인해서 messageA_opacity_in값이 음수가 되는데 이를 해결하기 위해 함수를 return 시키기 위해 필요하다.
 
     const sceneInfo = [
         {
@@ -84,13 +85,13 @@
         const objs = sceneInfo[currentScene].objs;
         const values = sceneInfo[currentScene].values;
         const currentYOffset = yOffset - prevScrollHeight;
-        /*console.log(currentScene, currentYOffset);*/
+        console.log(currentScene);
 
         switch (currentScene){
             case 0:
                 /*console.log('0 play');*/
                 let messageA_opacity_in = calcValues(values.messageA_opacity, currentYOffset);
-                console.log(messageA_opacity_in)
+                console.log(messageA_opacity_in);
                 objs.messageA.style.opacity = messageA_opacity_in;
                 break;
             case 1:
@@ -106,17 +107,21 @@
     }
 
     function scrollLoop () {
+        enterNewScene = false;
         // 스크롤할떄마다 값이 기하급수적으로 늘어나는데 이를 막기 위해 값을 초기화 시켜주기
         prevScrollHeight = 0;
         for(let i = 0; i < currentScene; i++) {
             prevScrollHeight += sceneInfo[i].scrollHeight;
         }
         if(yOffset > prevScrollHeight + sceneInfo[currentScene].scrollHeight){
+            enterNewScene = true;
             currentScene++;
             // 스크롤이 해당섹션에 진입하면 body에 id를 붙여서 block시켜준다
             document.body.setAttribute('id', `show-scene-${currentScene}`);
         }
         if(yOffset < prevScrollHeight){
+            enterNewScene = true;
+            if(currentScene === 0) return; //브라우저 바운스 효과로 인해 마이너스가 되는 것을 방지(모바일)
             currentScene--;
             // 스크롤이 해당섹션에 진입하면 body에 id를 붙여서 block시켜준다
             document.body.setAttribute('id', `show-scene-${currentScene}`);
@@ -124,6 +129,7 @@
         // 스크롤이 해당섹션에 진입하면 currentScene 인덱스가 바뀌는걸 확인할 수 있다
         /*console.log(currentScene);*/
 
+        if(enterNewScene) return;
         playAnimation();
     }
 
