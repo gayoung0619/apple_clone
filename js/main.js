@@ -60,8 +60,13 @@
     function setLayout(){
         // 각 스크롤 섹션의 높이 세팅
         for(let i = 0; i < sceneInfo.length; i++){
-            sceneInfo[i].scrollHeight = sceneInfo[i].heightNum * window.innerHeight;
-            sceneInfo[i].objs.container.style.height = `${sceneInfo[i].scrollHeight}px` //스크롤바가 작아질것임
+            if ( sceneInfo[i].type === 'sticky' ) {
+                sceneInfo[i].scrollHeight = sceneInfo[i].heightNum * window.innerHeight;
+                sceneInfo[i].objs.container.style.height = `${sceneInfo[i].scrollHeight}px` //스크롤바가 작아질것임
+            }else if ( sceneInfo[i].type === 'normal' ) {
+                sceneInfo[i].scrollHeight = sceneInfo[i].objs.container.offsetHeight;
+            }
+            sceneInfo[i].objs.container.style.height = `${sceneInfo[i].scrollHeight}px`
         }
 
         // *스크롤이 위치를 인식해서 body에 id값을 넣어줘야 되기때문이다* (애플코딩 : 현재 활성 씬 반영하기) -> 이해하기 어려움
